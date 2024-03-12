@@ -3,6 +3,9 @@
 <JUCERPROJECT id="UhBzsf" name="LevelMeter" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" companyName="Yaboy Music Surplus">
   <MAINGROUP id="aLvbg4" name="LevelMeter">
+    <GROUP id="{DC57BBFF-267F-4794-D39D-B7C211953C65}" name="Assets">
+      <FILE id="ZahRqD" name="MeterGrill.png" compile="0" resource="1" file="Assets/MeterGrill.png"/>
+    </GROUP>
     <GROUP id="{C762FF65-B57A-4912-1B88-67D23F863848}" name="Source">
       <FILE id="rkRngm" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
