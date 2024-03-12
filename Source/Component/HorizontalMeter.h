@@ -20,6 +20,6 @@ public:
     void setLevel(const float val) { level = val; }
     
 private:
-    float level = -60.0f;
+     float level = -60.0f;
 };
 }
