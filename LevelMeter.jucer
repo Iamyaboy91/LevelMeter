@@ -17,6 +17,8 @@
       <GROUP id="{0C8888FE-0F2B-E218-4A2F-D0D353FB2D6E}" name="Component">
         <FILE id="ZNZZCi" name="HorizontalMeter.h" compile="0" resource="0"
               file="Source/Component/HorizontalMeter.h" xcodeResource="0"/>
+        <FILE id="TTjhIG" name="VerticalDiscreteMeter.h" compile="0" resource="0"
+              file="Source/Component/VerticalDiscreteMeter.h"/>
         <FILE id="H8yJLI" name="VerticalGradientMeter.h" compile="0" resource="0"
               file="Source/Component/VerticalGradientMeter.h"/>
       </GROUP>
