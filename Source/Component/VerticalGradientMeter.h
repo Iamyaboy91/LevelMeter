@@ -25,7 +25,7 @@ public:
     {
         const auto level = valueSupplier();
         
-        auto bounds = getLocalBounds().toFloat().reduced(2.f);
+        auto bounds = getLocalBounds().toFloat().reduced(3.f);
         
         g.setColour(juce::Colours::black);
         g.fillRect(bounds);
@@ -37,9 +37,10 @@ public:
     {
         g.drawImage(grill, getLocalBounds().toFloat());
     }
+    
     void resized() override
     {
-        auto bounds = getLocalBounds().toFloat();
+        auto bounds = getLocalBounds().toFloat().reduced(3.f);
         gradient = juce::ColourGradient
         {
             juce::Colours::green,
