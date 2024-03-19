@@ -12,14 +12,20 @@
 //==============================================================================
 LevelMeterAudioProcessorEditor::LevelMeterAudioProcessorEditor (LevelMeterAudioProcessor& p)
 : AudioProcessorEditor (&p), audioProcessor (p)
-, verticalGradientMeterL([&]()  {return audioProcessor.getRmsValue(0); })
+,verticalGradientMeterL([&]()  {return audioProcessor.getRmsValue(0); })
 ,verticalGradientMeterR([&]() {return audioProcessor.getRmsValue(1); })
+,verticalDiscreteMeterL([&]() {return audioProcessor.getRmsValue(0); })
+,verticalDiscreteMeterR([&]() {return audioProcessor.getRmsValue(1); })
 {
     addAndMakeVisible(horizontalMeterL);
     addAndMakeVisible(horizontalMeterR);
     
     addAndMakeVisible(verticalGradientMeterL);
     addAndMakeVisible(verticalGradientMeterR);
+    
+    addAndMakeVisible(verticalDiscreteMeterL);
+    addAndMakeVisible(verticalDiscreteMeterR);
+    
     setSize (400, 500);
     
     startTimerHz(24);
@@ -50,6 +56,7 @@ void LevelMeterAudioProcessorEditor::paint (juce::Graphics& g)
 void LevelMeterAudioProcessorEditor::resized()
 {
     auto meterX = 100;
+    auto meterX2 = 250;
     auto meterY = 100;
     auto meterY2 = 200;
     auto meterWidth = 200;
@@ -63,5 +70,8 @@ void LevelMeterAudioProcessorEditor::resized()
     
     verticalGradientMeterL.setBounds(meterX, meterY2, meterWidth2, meterHeight2);
     verticalGradientMeterR.setBounds(meterX + meterOffset, meterY2, meterWidth2, meterHeight2);
+    
+    verticalDiscreteMeterL.setBounds(meterX2, meterY2, meterWidth2, meterHeight2);
+    verticalDiscreteMeterR.setBounds(meterX2 + meterOffset, meterY2, meterWidth2, meterHeight2);
     
 }
