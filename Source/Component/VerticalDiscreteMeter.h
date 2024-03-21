@@ -12,6 +12,8 @@
 #pragma once
 #include <JuceHeader.h>
 
+
+
 namespace Gui{
 
 class Bulb : public juce::Component

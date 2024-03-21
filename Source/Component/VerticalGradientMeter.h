@@ -23,24 +23,20 @@ public:
     
     void paint(juce::Graphics& g) override
     {
-        const auto level = valueSupplier();
-        
         auto bounds = getLocalBounds().toFloat().reduced(3.f);
         
         g.setColour(juce::Colours::black);
         g.fillRect(bounds);
+        
         g.setGradientFill(gradient);
-        const auto scaledY = juce::jmap(level, -60.f, 6.f, 0.f, static_cast<float>(getHeight()));
+        const auto scaledY = juce::jmap(valueSupplier(), -60.f, 6.f, 0.f, static_cast<float>(getHeight()));
         g.fillRect(bounds.removeFromBottom(scaledY));
     }
-    void paintOverChildren(juce::Graphics& g) override
-    {
-        g.drawImage(grill, getLocalBounds().toFloat());
-    }
+
     
     void resized() override
     {
-        auto bounds = getLocalBounds().toFloat().reduced(3.f);
+        auto bounds = getLocalBounds().toFloat();
         gradient = juce::ColourGradient
         {
             juce::Colours::green,
@@ -50,8 +46,12 @@ public:
             false
         };
         gradient.addColour(0.5, juce::Colours::yellow);
-        
     }
+    void paintOverChildren(juce::Graphics& g) override
+    {
+        g.drawImage(grill, getLocalBounds().toFloat());
+    }
+    
     void timerCallback() override
     {
         repaint();
