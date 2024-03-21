@@ -7,9 +7,6 @@
       <FILE id="ZahRqD" name="MeterGrill.png" compile="0" resource="1" file="Assets/MeterGrill.png"/>
     </GROUP>
     <GROUP id="{C762FF65-B57A-4912-1B88-67D23F863848}" name="Source">
-      <GROUP id="{A7F9E124-637B-5C8A-8D17-150C1C1B7B8C}" name="Utillity">
-        <FILE id="t0RIcj" name="Fifo.h" compile="0" resource="0" file="Source/Fifo.h"/>
-      </GROUP>
       <FILE id="rkRngm" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="QhZ1Wq" name="PluginProcessor.h" compile="0" resource="0"
@@ -17,6 +14,9 @@
       <FILE id="EYpHeX" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="xnzbel" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <GROUP id="{A7F9E124-637B-5C8A-8D17-150C1C1B7B8C}" name="Utillity">
+        <FILE id="t0RIcj" name="Fifo.h" compile="0" resource="0" file="Source/Fifo.h"/>
+      </GROUP>
       <GROUP id="{0C8888FE-0F2B-E218-4A2F-D0D353FB2D6E}" name="Component">
         <FILE id="hqWfAr" name="CircularMeter.h" compile="0" resource="0" file="Source/Component/CircularMeter.h"/>
         <FILE id="ZNZZCi" name="HorizontalMeter.h" compile="0" resource="0"
