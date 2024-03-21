@@ -11,7 +11,6 @@
 
 //==============================================================================
 LevelMeterAudioProcessor::LevelMeterAudioProcessor()
-#ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
@@ -19,14 +18,28 @@ LevelMeterAudioProcessor::LevelMeterAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
-#endif
+                       ),
+parameters(*this, nullptr, "LevelMeter", juce::AudioProcessorValueTreeState::ParameterLayout
 {
-    
+        std::make_unique<juce::AudioParameterFloat>("Left", "Left", -60.f, 12.f, 0.f),
+        std::make_unique<juce::AudioParameterFloat>("Right", "Right", -60.f, 12.f, 0.f),
+    std::make_unique<juce::AudioParameterInt>("RmsPeriod", "Period", 1, 500, 50),
+    std::make_unique<juce::AudioParameterBool>("Smoothing", "Enable Smoothing", true)
+})
+{
+    parameters.addParameterListener("Left", this);
+    parameters.addParameterListener("Right", this);
+    parameters.addParameterListener("RmsPeriod", this);
+    parameters.addParameterListener("Smoothing", this);
 }
+
 
 LevelMeterAudioProcessor::~LevelMeterAudioProcessor()
 {
+    parameters.removeParameterListener("Left", this);
+    parameters.removeParameterListener("Right", this);
+    parameters.removeParameterListener("RmsPeriod", this);
+    parameters.removeParameterListener("Smoothing", this);
 }
 
 //==============================================================================
@@ -94,11 +107,28 @@ void LevelMeterAudioProcessor::changeProgramName (int index, const juce::String&
 //==============================================================================
 void LevelMeterAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    rmsLevelLeft.reset(sampleRate, 0.5);
-    rmsLevelRight.reset(sampleRate, 0.5);
+    const auto numberOfChannels = getTotalNumInputChannels();
     
-    rmsLevelLeft.SmoothedValue::setCurrentAndTargetValue(-100.0f);
-    rmsLevelRight.SmoothedValue::setCurrentAndTargetValue(-100.0f);
+    rmsLevels.clear();
+    for(auto i = 0; i < numberOfChannels; i++)
+    {
+        juce::LinearSmoothedValue<float> rms{ -100.f };
+        rms.reset(sampleRate, 0.5);
+        rmsLevels.emplace_back(std::move(rms));
+    }
+    
+    rmsFifo.reset(numberOfChannels, static_cast<int>(sampleRate) + 1);
+    rmsCalculationBuffer.clear();
+    rmsCalculationBuffer.setSize(numberOfChannels, static_cast<int>(sampleRate) + 1);
+    
+    gainLeft.reset(sampleRate, 0.2);
+    gainLeft.SmoothedValue::setCurrentAndTargetValue(juce::Decibels::decibelsToGain(parameters.getRawParameterValue("Left")-> load()));
+    
+    gainRight.reset(sampleRate, 0.2);
+    gainRight.SmoothedValue::setCurrentAndTargetValue(juce::Decibels::decibelsToGain(parameters.getRawParameterValue("Right")-> load()));
+    
+    rmsWindowSize = static_cast<int>(sampleRate * parameters.getRawParameterValue("RmsPeriod")->load()) / 1000;
+    isSmoothed = static_cast<bool>(parameters.getRawParameterValue("Smoothing")-> load());
 }
 
 void LevelMeterAudioProcessor::releaseResources()
@@ -136,25 +166,27 @@ bool LevelMeterAudioProcessor::isBusesLayoutSupported (const BusesLayout& layout
 void LevelMeterAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
-    rmsLevelLeft.skip(buffer.getNumSamples());
-    rmsLevelRight.skip(buffer.getNumSamples());
-    {
-        const auto value = juce::Decibels::gainToDecibels(buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
-        if (value < rmsLevelLeft.SmoothedValue::getCurrentValue())
-            rmsLevelLeft.setTargetValue(value);
-        else
-            rmsLevelLeft.SmoothedValue::setCurrentAndTargetValue(value);
-    }
+    const auto numSamples = buffer.getNumSamples();
     
     {
-        const auto value = juce::Decibels::gainToDecibels(buffer.getRMSLevel(1, 0, buffer.getNumSamples()));
-        if (value < rmsLevelRight.SmoothedValue::getCurrentValue())
-            rmsLevelRight.setTargetValue(value);
-        else
-            rmsLevelRight.SmoothedValue::setCurrentAndTargetValue(value);
-        
+        const auto startGain = gainLeft.getCurrentValue();
+        gainLeft.skip(buffer.getNumSamples());
+        const auto endGain = gainLeft.getCurrentValue();
+        buffer.applyGainRamp(0, 0, numSamples, startGain, endGain);
+       
     }
-
+    {
+        const auto startGain = gainRight.getCurrentValue();
+        gainRight.skip(buffer.getNumSamples());
+        const auto endGain = gainRight.getCurrentValue();
+        buffer.applyGainRamp(0, 0, numSamples, startGain, endGain);
+       
+    }
+    for (auto& rmsLevel : rmsLevels)
+        rmsLevel.skip(numSamples);
+    
+    rmsFifo.push(buffer);
+  
 }
 
 //==============================================================================
@@ -183,15 +215,52 @@ void LevelMeterAudioProcessor::setStateInformation (const void* data, int sizeIn
 }
 
 //==============================================================================
-float LevelMeterAudioProcessor::getRmsValue(const int channel) const
+void LevelMeterAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue)
 {
-    jassert(channel == 0 || channel == 1);
-    if(channel == 0)
-        return rmsLevelLeft.getCurrentValue();
-    if(channel == 1)
-        return rmsLevelRight.getCurrentValue();
+        if(parameterID.equalsIgnoreCase("Left"))
+            gainLeft.setTargetValue(juce::Decibels::decibelsToGain(newValue));
+        if(parameterID.equalsIgnoreCase("Right"))
+            gainRight.setTargetValue(juce::Decibels::decibelsToGain(newValue));
+        if(parameterID.equalsIgnoreCase("RmsPeriod"))
+            rmsWindowSize = static_cast<int>(sampleRate * newValue) / 1000;
+        if(parameterID.equalsIgnoreCase("Smoothing"))
+            isSmoothed = static_cast<bool>(newValue);
     
 }
+
+std::vector<float> LevelMeterAudioProcessor::getRmsLevels()
+{
+    rmsFifo.pull(rmsCalculationBuffer, rmsWindowSize);
+    std::vector<float> levels;
+    for (auto channel = 0; channel < rmsCalculationBuffer.getNumChannels(); channel++)
+    {
+        processLevelValue(rmsLevels[channel], juce::Decibels::gainToDecibels(rmsCalculationBuffer.getRMSLevel(channel, 0, rmsWindowSize)));
+        levels.push_back(rmsLevels[channel].getCurrentValue());
+    }
+    return levels;
+}
+
+float LevelMeterAudioProcessor::getRmsLevel(const int channel)
+{
+    jassert(channel >= 0 && channel < rmsCalculationBuffer.getNumChannels());
+    rmsFifo.pull(rmsCalculationBuffer.getWritePointer(channel), channel, rmsWindowSize);
+    processLevelValue(rmsLevels[channel], juce::Decibels::gainToDecibels(rmsCalculationBuffer.getRMSLevel(channel, 0, rmsWindowSize)));
+    return rmsLevels[channel].getCurrentValue();
+}
+
+void LevelMeterAudioProcessor::processLevelValue(juce::LinearSmoothedValue<float>& smoothedValue, const float value) const
+{
+    if (isSmoothed)
+    {
+        if(value < smoothedValue.getCurrentValue())
+        {
+            smoothedValue.setTargetValue(value);
+            return;
+        }
+    }
+    smoothedValue.setCurrentAndTargetValue(value);
+}
+
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {

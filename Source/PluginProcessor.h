@@ -9,11 +9,13 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Fifo.h"
+
 
 //==============================================================================
 /**
 */
-class LevelMeterAudioProcessor  : public juce::AudioProcessor
+class LevelMeterAudioProcessor  : public juce::AudioProcessor, public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
@@ -53,10 +55,26 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     
-    float getRmsValue(const int channel) const;
+    
+    void parameterChanged(const juce::String& parameterID, float newValue) override;
+    juce::AudioProcessorValueTreeState& getApvts() { return parameters; }
+    std::vector<float> getRmsLevels();
+    float getRmsLevel(const int channel);
+    
 private:
-   
-   juce::LinearSmoothedValue <float> rmsLevelLeft, rmsLevelRight;
+    void processLevelValue(juce::LinearSmoothedValue<float>& smoothedValue, const float value) const;
+    
+    juce::AudioProcessorValueTreeState parameters;
+    juce::LinearSmoothedValue<float> gainLeft, gainRight;
+    
+    std::vector<juce::LinearSmoothedValue<float>> rmsLevels;
+    Utility::Fifo rmsFifo;
+    juce::AudioBuffer<float> rmsCalculationBuffer;
+     
+    
+    int rmsWindowSize = 50;
+    double sampleRate = 48'000.0;
+    bool isSmoothed = true;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LevelMeterAudioProcessor)
 };
