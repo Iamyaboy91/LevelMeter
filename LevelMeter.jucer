@@ -29,6 +29,8 @@
               file="Source/Component/VerticalGradientMeter.h"/>
         <FILE id="TTjhIG" name="VerticalDiscreteMeter.h" compile="0" resource="0"
               file="Source/Component/VerticalDiscreteMeter.h"/>
+        <FILE id="PVv3ak" name="GainComponent.cpp" compile="1" resource="0"
+              file="Source/Component/GainComponent.cpp"/>
         <FILE id="rvcdew" name="GainComponent.h" compile="0" resource="0" file="Source/Component/GainComponent.h"/>
       </GROUP>
     </GROUP>
