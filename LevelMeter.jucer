@@ -14,10 +14,14 @@
       <FILE id="EYpHeX" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="xnzbel" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
-      <GROUP id="{A7F9E124-637B-5C8A-8D17-150C1C1B7B8C}" name="Utillity">
+      <GROUP id="{BEA435EB-AEF0-9969-BC6E-A90CE91987FE}" name="Utility">
         <FILE id="t0RIcj" name="Fifo.h" compile="0" resource="0" file="Source/Fifo.h"/>
       </GROUP>
       <GROUP id="{0C8888FE-0F2B-E218-4A2F-D0D353FB2D6E}" name="Component">
+        <FILE id="df4rpr" name="HeaderComponent.cpp" compile="1" resource="0"
+              file="Source/Component/HeaderComponent.cpp"/>
+        <FILE id="o9kNz3" name="HeaderComponent.h" compile="0" resource="0"
+              file="Source/Component/HeaderComponent.h"/>
         <FILE id="hqWfAr" name="CircularMeter.h" compile="0" resource="0" file="Source/Component/CircularMeter.h"/>
         <FILE id="ZNZZCi" name="HorizontalMeter.h" compile="0" resource="0"
               file="Source/Component/HorizontalMeter.h" xcodeResource="0"/>
@@ -25,6 +29,7 @@
               file="Source/Component/VerticalGradientMeter.h"/>
         <FILE id="TTjhIG" name="VerticalDiscreteMeter.h" compile="0" resource="0"
               file="Source/Component/VerticalDiscreteMeter.h"/>
+        <FILE id="rvcdew" name="GainComponent.h" compile="0" resource="0" file="Source/Component/GainComponent.h"/>
       </GROUP>
     </GROUP>
   </MAINGROUP>

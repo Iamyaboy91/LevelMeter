@@ -50,7 +50,7 @@ LevelMeterAudioProcessorEditor::LevelMeterAudioProcessorEditor (LevelMeterAudioP
     
     rmsLevelHeading1.setText("dbFS", juce::dontSendNotification);
     rmsLevelHeading1.setFont(juce::Font{}.withStyle(juce::Font::FontStyleFlags::bold));
-    rmsLevelHeading2.setText("Left \t Right", juce::dontSendNotification);
+    rmsLevelHeading2.setText("Left  \t  Right", juce::dontSendNotification);
     rmsLevelHeading2.setFont(juce::Font{}.withStyle(juce::Font::FontStyleFlags::bold));
     currentRmsLabel.setText("Current RMS", juce::dontSendNotification);
     maxRmsLabel.setText("Max RMS", juce::dontSendNotification);
@@ -181,22 +181,4 @@ void LevelMeterAudioProcessorEditor::resized()
     
     
 }
-//    auto meterX = 100;
-//    auto meterX2 = 250;
-//    auto meterY = 100;
-//    auto meterY2 = 200;
-//    auto meterWidth = 200;
-//    auto meterWidth2 = 25;
-//    auto meterOffset = 30;
-//    auto meterHeight = 15;
-//    auto meterHeight2 = 200;
-//
-//    horizontalMeterL.setBounds(meterX, meterY, meterWidth, meterHeight);
-//    horizontalMeterR.setBounds(meterX, meterY + 20, meterWidth, meterHeight);
-//
-//    verticalGradientMeterL.setBounds(meterX, meterY2, meterWidth2, meterHeight2);
-//    verticalGradientMeterR.setBounds(meterX + meterOffset, meterY2, meterWidth2, meterHeight2);
-//
-//    verticalDiscreteMeterL.setBounds(meterX2, meterY2, meterWidth2, meterHeight2);
-//    verticalDiscreteMeterR.setBounds(meterX2 + meterOffset, meterY2, meterWidth2, meterHeight2);
-//
+
