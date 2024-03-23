@@ -10,15 +10,17 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "Component/HeaderComponent.h"
 #include "Component/HorizontalMeter.h"
 #include "Component/VerticalGradientMeter.h"
 #include "Component/VerticalDiscreteMeter.h"
 #include "Component/CircularMeter.h"
+#include "Component/GainComponent.h"
 
 //==============================================================================
 /**
 */
-class LevelMeterAudioProcessorEditor  : public juce::AudioProcessorEditor, public juce::Timer
+class LevelMeterAudioProcessorEditor  : public juce::AudioProcessorEditor, public juce::Timer 
 {
 public:
     LevelMeterAudioProcessorEditor (LevelMeterAudioProcessor&);
@@ -35,6 +37,8 @@ private:
     // access the processor object that created it.
     LevelMeterAudioProcessor& audioProcessor;
     
+//  Header Section
+
     juce::Slider leftSlider, rightSlider, rmsPeriodSlider;
     juce::AudioProcessorValueTreeState::SliderAttachment leftSliderAttachment, rightSliderAttachment, rmsPeriodAttachment;
     juce::ToggleButton enableSmoothingButton;
@@ -52,6 +56,6 @@ private:
     Gui::VerticalGradientMeter verticalGradientMeterL, verticalGradientMeterR;
     Gui::VerticalDiscreteMeter verticalDiscreteMeterL, verticalDiscreteMeterR;
     Gui::CircularMeter circularMeterL, circularMeterR;
-    
+ 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LevelMeterAudioProcessorEditor)
 };

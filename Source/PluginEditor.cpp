@@ -121,7 +121,7 @@ void LevelMeterAudioProcessorEditor::paint (juce::Graphics& g)
     g.setGradientFill( juce::ColourGradient{juce::Colours::darkgrey, getLocalBounds().toFloat().getCentre(), juce::Colours::darkgrey.darker(0.7f), {}, true});
     g.fillRect(getLocalBounds());
     
-    g.setColour(juce::Colours::black);
+    g.setGradientFill( juce::ColourGradient{juce::Colours::black, getLocalBounds().toFloat().getCentre(), juce::Colours::black.darker(0.7f), {}, true});
     g.fillEllipse(circularMeterL.getBounds().toFloat());
 }
 
