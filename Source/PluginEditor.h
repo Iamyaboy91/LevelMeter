@@ -56,6 +56,7 @@ private:
     Gui::VerticalGradientMeter verticalGradientMeterL, verticalGradientMeterR;
     Gui::VerticalDiscreteMeter verticalDiscreteMeterL, verticalDiscreteMeterR;
     Gui::CircularMeter circularMeterL, circularMeterR;
- 
+    GainComponent gain;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LevelMeterAudioProcessorEditor)
 };

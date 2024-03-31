@@ -14,12 +14,12 @@
 
 
 //==============================================================================
-GainComponent::GainComponent(juce::Slider &slider, juce::Label& label, juce::AudioProcessorValueTreeState &apvts, juce::String LeftSliderId, juce::String RightSliderId)
+GainComponent::GainComponent(juce::AudioProcessorValueTreeState &apvts, juce::String leftSliderId, juce::String rightSliderId)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-    setSliderWithLabels(leftSlider, gainLeft, apvts, LeftSliderId, leftSliderAttachment);
-    setSliderWithLabels(rightSlider, gainRight, apvts, RightSliderId, rightSliderAttachment);
+    setSliderWithLabels(leftSlider, gainLeft, apvts, leftSliderId, leftSliderAttachment);
+    setSliderWithLabels(rightSlider, gainRight, apvts, rightSliderId, rightSliderAttachment);
 }
 
 GainComponent::~GainComponent()
@@ -29,19 +29,15 @@ GainComponent::~GainComponent()
 void GainComponent::paint (juce::Graphics& g)
 {
 
-
 }
 
 void GainComponent::resized()
 {
-    const auto container = getBounds().reduced(20);
-    auto bounds = container;
+    auto bounds = getLocalBounds().toFloat().reduced(5);
     auto sliderBounds = bounds.reduced(5);
-    
     sliderBounds = sliderBounds.withSizeKeepingCentre(sliderBounds.proportionOfWidth(0.6f), sliderBounds.getHeight());
-    rightSlider.setBounds(sliderBounds.removeFromLeft(sliderBounds.proportionOfWidth(0.5f)));
-    sliderBounds.removeFromLeft(5);
-    rightSlider.setBounds(sliderBounds);}
+    
+}
 
 void GainComponent::setSliderWithLabels(juce::Slider &slider, juce::Label& label, juce::AudioProcessorValueTreeState &apvts, juce::String parameterId, std::unique_ptr<attachment> &attachment)
 {
@@ -52,10 +48,12 @@ void GainComponent::setSliderWithLabels(juce::Slider &slider, juce::Label& label
     slider.setColour(juce::Slider::ColourIds::rotarySliderFillColourId, juce::Colours::limegreen.withBrightness(0.6f));
     slider.setColour(juce::Slider::ColourIds::thumbColourId, juce::Colours::limegreen);
     
-    auto channel = 0;
-    if (channel >= 0)
+    if (auto channel = 0)
     {
         slider.setTextValueSuffix(" db : Right Channel");
-    } else
+    } else if(channel == 1)
+    {
         slider.setTextValueSuffix(" db : Left Channel");
+    }
+
 }

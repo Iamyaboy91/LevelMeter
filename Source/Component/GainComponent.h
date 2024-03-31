@@ -11,10 +11,11 @@
 #pragma once
 #include "JuceHeader.h"
 
-class GainComponent : public juce::Component, public juce::Timer
+class GainComponent : public juce::Component
+//, public juce::Timer
 {
 public:
-    GainComponent(juce::Slider &slider, juce::Label& label, juce::AudioProcessorValueTreeState &apvts, juce::String LeftSliderId, juce::String RightSliderId);
+    GainComponent(juce::AudioProcessorValueTreeState &apvts, juce::String LeftSliderId, juce::String rightSliderId);
     ~GainComponent() override;
     void paint (juce::Graphics& g) override;
     void resized() override;

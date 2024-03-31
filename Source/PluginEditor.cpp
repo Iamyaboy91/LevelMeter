@@ -22,6 +22,7 @@ LevelMeterAudioProcessorEditor::LevelMeterAudioProcessorEditor (LevelMeterAudioP
 ,verticalDiscreteMeterR([&]() {return audioProcessor.getRmsLevel(1); })
 ,circularMeterL([&](){return audioProcessor.getRmsLevel(0);}, juce::Colours::lawngreen)
 ,circularMeterR([&](){return audioProcessor.getRmsLevel(1);}, juce::Colours::lightgreen)
+,gain(p.getApvts(), "Left" , "Right")
 {
     addAndMakeVisible(rmsLevelHeading1);
     addAndMakeVisible(rmsLevelHeading2);
@@ -43,10 +44,14 @@ LevelMeterAudioProcessorEditor::LevelMeterAudioProcessorEditor (LevelMeterAudioP
     addAndMakeVisible(circularMeterL);
     addAndMakeVisible(circularMeterR);
     
+//    addAndMakeVisible(gain);
     addAndMakeVisible(leftSlider);
     addAndMakeVisible(rightSlider);
     addAndMakeVisible(rmsPeriodSlider);
     addAndMakeVisible(enableSmoothingButton);
+    
+  
+    
     
     rmsLevelHeading1.setText("dbFS", juce::dontSendNotification);
     rmsLevelHeading1.setFont(juce::Font{}.withStyle(juce::Font::FontStyleFlags::bold));
@@ -121,7 +126,7 @@ void LevelMeterAudioProcessorEditor::paint (juce::Graphics& g)
     g.setGradientFill( juce::ColourGradient{juce::Colours::darkgrey, getLocalBounds().toFloat().getCentre(), juce::Colours::darkgrey.darker(0.7f), {}, true});
     g.fillRect(getLocalBounds());
     
-    g.setGradientFill( juce::ColourGradient{juce::Colours::black, getLocalBounds().toFloat().getCentre(), juce::Colours::black.darker(0.7f), {}, true});
+    g.setGradientFill( juce::ColourGradient{juce::Colours::black, getLocalBounds().toFloat().getCentre(), juce::Colours::black.withLightness(0.8f), {}, true});
     g.fillEllipse(circularMeterL.getBounds().toFloat());
 }
 
@@ -172,12 +177,16 @@ void LevelMeterAudioProcessorEditor::resized()
     circularMeterL.setBounds(circularMeterBounds);
     circularMeterR.setBounds(circularMeterBounds);
     
+
+    
     auto sliderBounds = bounds.reduced(5);
     sliderBounds = sliderBounds.withSizeKeepingCentre(sliderBounds.proportionOfWidth(0.6f), sliderBounds.getHeight());
     leftSlider.setBounds(sliderBounds.removeFromLeft(sliderBounds.proportionOfWidth(0.5f)));
     sliderBounds.removeFromLeft(5);
     rightSlider.setBounds(sliderBounds);
     
+    auto gainRL = bounds.removeFromTop(container.proportionOfHeight(0.6f)).reduced(5);
+    gain.setBounds(gainRL);
     
     
 }
