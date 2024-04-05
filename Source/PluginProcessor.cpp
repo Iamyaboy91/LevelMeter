@@ -21,10 +21,10 @@ LevelMeterAudioProcessor::LevelMeterAudioProcessor()
                        ),
 parameters(*this, nullptr, "LevelMeter", juce::AudioProcessorValueTreeState::ParameterLayout
 {
-        std::make_unique<juce::AudioParameterFloat>("Left", "Left", -60.f, 12.f, 0.f),
-        std::make_unique<juce::AudioParameterFloat>("Right", "Right", -60.f, 12.f, 0.f),
-    std::make_unique<juce::AudioParameterInt>("RmsPeriod", "Period", 1, 500, 50),
-    std::make_unique<juce::AudioParameterBool>("Smoothing", "Enable Smoothing", true)
+    std::make_unique<juce::AudioParameterFloat>( juce::ParameterID {"Left",1 },  "Left", -60.f, 12.f, 0.f),
+    std::make_unique<juce::AudioParameterFloat>(juce::ParameterID { "Right",1 },  "Right", -60.f, 12.f, 0.f),
+    std::make_unique<juce::AudioParameterInt>(juce::ParameterID { "RmsPeriod", 1}, "Period", 1, 500, 50),
+    std::make_unique<juce::AudioParameterBool>(juce::ParameterID { "Smoothing", 1}, "Enable Smoothing", true)
 })
 {
     parameters.addParameterListener("Left", this);
